@@ -9,4 +9,8 @@ public class Fee extends Transaction{
 		super(TransactionType.FEE,amount);
 		this.feeType=feeType;
 	}
+	
+	public FeeType getFeeType() {//can I do this??
+		return feeType;
+	}
 }

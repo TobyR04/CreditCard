@@ -15,6 +15,7 @@ public class CreditCard {
 	private double currentBalance;
 	private double availCredit;
 	private ArrayList<Transaction> transactions; // create class
+	private double[] totals;
 
 	public CreditCard(String creditCardID, LocalDate expirationDate, String issueCompany, CreditCardType creditCardType,
 			double creditCardLimit) {
@@ -69,7 +70,6 @@ public class CreditCard {
 	}
 
 	public Purchase getLargestPurchase() {
-		// go through array and see if purchase-then wwhich is largest
 		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
 		for (int i = 0; i < transactions.size(); i++) {
 			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
@@ -114,6 +114,142 @@ public class CreditCard {
 
 	}
 
+	public double getTotalTravel() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.TRAVEL)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalUtilities() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.UTILITIES)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalLodging() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.LODGING)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalRestaurant() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.RESTAURANT)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalCar() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.CAR)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalClothing() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.CLOTHING)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalFood() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.FOOD)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
+	public double getTotalGroceries() {
+		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+		for (int i = 0; i < transactions.size(); i++) {
+			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
+				purchases.add(transactions.get(i));
+			}
+		}
+		double total = 0;
+		for (int i = 0; i < purchases.size(); i++) {
+			Purchase purchaseType = (Purchase) purchases.get(i);
+			if (purchaseType.getPurchaseType().equals(PurchaseType.GROCERIES)) {
+				total += purchases.get(i).getAmount();
+			}
+		}
+		return total;
+	}
+
 	public Payment getMostRecentPayment() {
 		for (int i = transactions.size() - 1; i > 0; i--) {
 			if (transactions.get(i).getType().equals(TransactionType.PAYMENT)) {
@@ -126,6 +262,36 @@ public class CreditCard {
 
 	}
 
+	// make method that returns which purchase the most money was spent for
+	public PurchaseType getMostMoneySpent() {
+
+		double carTotal = getTotalCar();
+		double clothTotal = getTotalClothing();
+		double foodTotal = getTotalFood();
+		double grocerTotal = getTotalGroceries();
+		double lodgeTotal = getTotalLodging();
+		double restaurantTotal = getTotalRestaurant();
+		double travelTotal = getTotalTravel();
+		double utilitiesTotal = getTotalUtilities();
+
+		double[] totals = { carTotal, clothTotal, foodTotal, grocerTotal, lodgeTotal, restaurantTotal, travelTotal,
+				utilitiesTotal };
+		PurchaseType[] types = { PurchaseType.CAR, PurchaseType.CLOTHING, PurchaseType.FOOD, PurchaseType.GROCERIES,
+				PurchaseType.LODGING, PurchaseType.RESTAURANT, PurchaseType.TRAVEL, PurchaseType.UTILITIES };
+
+		double largest = totals[0];
+		PurchaseType largestPurchase = types[0];
+		for (int i = 1; i < totals.length; i++) {
+			if (totals[i] > largest) {
+				largest = totals[i];
+				largestPurchase = types[i];
+			}
+
+		}
+		
+		return largestPurchase;
+	}
+
 	public CreditCardStatus getCreditCardStatus() {
 		return creditCardStatus;
 	}
@@ -134,12 +300,12 @@ public class CreditCard {
 		return creditCardId;
 	}
 
-//	public int compareTo(CreditCard other) {
-//		if (this.creditCardId.compareTo(other.creditCardId) > 0) {
-//			return 1;
-//		}
-//		return 0;
-//	} see if we need this later
+	public int compareTo(CreditCard other) {
+		if (getMostRecentPurchase().compareTo(other.getMostRecentPurchase()) > 0) {
+			return 1;
+		}
+		return 0; // } see if we need this later
+	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -34,7 +34,104 @@ public class CreditCards {
 		}
 		return totCredit;
 	}
+	
 
+	public Payment getMostRecentPayment() {
+		Payment recent = cards.get(0).getMostRecentPayment();
+		//assuming last credit card added has the most recent payment
+		for (int i = cards.size() - 1; i > 0; i--) {
+			if (!cards.get(i).getMostRecentPayment().equals(null)) {
+				return cards.get(i).getMostRecentPayment();
+
+			}
+
+		}
+		return null;
+
+	}
+	
+	public double getTotalCar() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalCar();
+		}
+		return total;
+	}
+	
+	public double getTotalFood() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalFood();
+		}
+		return total;
+	}
+
+	public double getTotalClothing() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalClothing();
+		}
+		return total;
+	}
+	public double getTotalGroceries() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalGroceries();
+		}
+		return total;
+	}
+	
+	public double getTotalRestaurant() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalRestaurant();
+		}
+		return total;
+	}
+	
+	public double getTotalLodging() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalLodging();
+		}
+		return total;
+	}
+	public double getTotalUtilities() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalUtilities();
+		}
+		return total;
+	}
+	public double getTotalTravel() {
+		double total=0;
+		for(int i = 0;i<cards.size();i++) {
+			total+=cards.get(i).getTotalTravel();
+		}
+		return total;
+	}
+	
+	public PurchaseType getMostPurchase() {
+
+		PurchaseType largest=cards.get(0).getMostMoneySpent();
+		for(int i =1; i<cards.size();i++) {//how do I compare to see which purchase is the greatest??
+			double carTotal = getTotalCar();
+			double clothTotal = getTotalClothing();
+			double foodTotal = getTotalFood();
+			double grocerTotal = getTotalGroceries();
+			double lodgeTotal = getTotalLodging();
+			double restaurantTotal = getTotalRestaurant();
+			double travelTotal = getTotalTravel();
+			double utilitiesTotal = getTotalUtilities();
+			
+			//go through purchases...
+			if(cards.get(i).getMostMoneySpent().compareTo(largest)>0) { //make a compare to method which compares purchases???
+				largest=cards.get(i).getMostMoneySpent();
+			}
+		}
+		return largest;
+	}
+	
 	public void addCard(CreditCard creditCard) {
 		if (!cards.contains(creditCard)) {
 			cards.add(creditCard);

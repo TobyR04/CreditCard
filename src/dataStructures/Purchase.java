@@ -11,4 +11,13 @@ public class Purchase  extends Transaction{
 		this.vendor = vendor;
 		
 	}
+	
+	public PurchaseType getPurchaseType() {
+		return purchaseType;
+	}
+
+	public int compareTo(Purchase mostRecentPurchase) {//do I need this?????
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
