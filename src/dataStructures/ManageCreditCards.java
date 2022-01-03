@@ -137,15 +137,15 @@ public class ManageCreditCards {
 			System.out.print("Please enter the bank name: ");
 			String bankName = input.nextLine();
 			System.out.print("Please enter the bank ID: ");
-			String bankID =input.nextLine();
+			String bankID = input.nextLine();
 			System.out.print("Please enter the balance: ");
 			double balance = input.nextDouble();
-			while(balance < 0) {
+			while (balance < 0) {
 				System.out.print("Invalid amount. Please enter the amount again:");
 				balance = input.nextDouble();
 			}
 			bankAccounts.addBankAccount(new BankAccount(bankName, bankID, balance));
-			
+
 		}
 
 		// make method to exit
@@ -225,11 +225,35 @@ public class ManageCreditCards {
 			System.out.print("Please enter the payment type: ");
 			String payment = input.nextLine();
 			// figure out how to see if enum contains the String
-			
+
 			System.out.print("Please enter the bank account ID affiliated with this payment: ");
-			
-			
+			break;
 		case 5:
+			System.out.print("Please enter the fee type: Choose 1 for Late Payment and 2 for Interest: ");
+			int feeOption = input.nextInt();
+			while (feeOption < 1 || feeOption > 2) {
+				System.out.println("Invalid option.");
+				System.out.print("1. Late Payment 2. Interest");
+				feeOption = input.nextInt();
+			}
+			FeeType fee;
+			switch (feeOption) {
+			case 1:
+				fee = FeeType.LATEPAYMENT;
+				break;
+			case 2:
+				fee = FeeType.INTEREST;
+				break;
+			}
+			System.out.print("Please enter the amount: ");
+			double feeAmount = input.nextDouble();
+			while (feeAmount < 0) {
+				System.out.print("Invalid amount. Please re-enter the amount: ");
+				feeAmount = input.nextDouble();
+			}
+			card.addFee(new Fee(feeAmount, fee));
+			break;
+			// make last case which exits
 		}
 	}
 
