@@ -167,7 +167,7 @@ public class CreditCards {
 
 	public CreditCard findCard(String id) {
 		for (int i = 0; i < cards.size(); i++) {
-			if (cards.get(i).getCreditCardID().equals(id)) {
+			if (cards.get(i).equals(id)) {
 				return cards.get(i);
 			}
 		}

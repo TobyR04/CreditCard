@@ -13,10 +13,6 @@ public class BankAccount {
 
 	}
 
-	public String getAccountId() {
-		return accountID;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

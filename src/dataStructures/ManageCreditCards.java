@@ -12,22 +12,14 @@ public class ManageCreditCards {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner input = new Scanner(System.in);
+
 		menu(input);
 
 	}
 
 	public static void menu(Scanner input) {
-
-		System.out.println("Please choose a menu option: ");
-		System.out.print("\n1. Add a new Credit Card \n2. Remove a Credit Card \n3. Display total outstanding balances"
-				+ "\n4. Display total available credit \n5. Display largest purchase\n"
-				+ "6. Display most recent payment\n" + "7. Display total spent on certain category of expense\n"
-				+ "8. For which type of Purchase was the most money spent\n"
-				+ "9. Manage a specific Credit Card \n10. Add Bank Account\n11. Exit ");
-
-		int choice = input.nextInt();
-		while (choice < 1 || choice > 10) {
-			System.out.println("You can only enter 1-10. Please re-enter your choice");
+		boolean again = true;
+		do {
 			System.out.println("Please choose a menu option: ");
 			System.out.print(
 					"\n1. Add a new Credit Card \n2. Remove a Credit Card \n3. Display total outstanding balances"
@@ -35,23 +27,38 @@ public class ManageCreditCards {
 							+ "6. Display most recent payment\n"
 							+ "7. Display total spent on certain category of expense\n"
 							+ "8. For which type of Purchase was the most money spent\n"
-							+ "9. Manage a specific Credit Card \n10. Add Bank Account\n11. Exit");
+							+ "9. Manage a specific Credit Card \n10. Add Bank Account\n11. Exit ");
 
-			choice = input.nextInt();
-		}
-		input.nextLine();
-		try {
-			chooseOption(choice, input);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			int choice = input.nextInt();
+			while (choice < 1 || choice > 10) {
+				System.out.println("You can only enter 1-10. Please re-enter your choice");
+				System.out.println("Please choose a menu option: ");
+				System.out.print(
+						"\n1. Add a new Credit Card \n2. Remove a Credit Card \n3. Display total outstanding balances"
+								+ "\n4. Display total available credit \n5. Display largest purchase\n"
+								+ "6. Display most recent payment\n"
+								+ "7. Display total spent on certain category of expense\n"
+								+ "8. For which type of Purchase was the most money spent\n"
+								+ "9. Manage a specific Credit Card \n10. Add Bank Account\n11. Exit");
+
+				choice = input.nextInt();
+			}
+			input.nextLine();
+
+			try {
+				again = chooseOption(choice, input);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} while (again);
 
 	}
 
-	public static void chooseOption(int choice, Scanner input) throws ParseException {
+	public static boolean chooseOption(int choice, Scanner input) throws ParseException {
 		CreditCards cards = new CreditCards();
 		BankAccounts bankAccounts = new BankAccounts();// add cards to this
+
 		switch (choice) {
 		case 1:
 			System.out.print("Enter the Credit Card Number: ");
@@ -145,10 +152,13 @@ public class ManageCreditCards {
 				balance = input.nextDouble();
 			}
 			bankAccounts.addBankAccount(new BankAccount(bankName, bankID, balance));
+			break;
+		default:
+			System.out.println("Goodbye...Exiting...");
+			return false;
 
 		}
-
-		// make method to exit
+		return true;
 
 //		
 //	    public boolean isValid(String dateStr) {
@@ -171,90 +181,96 @@ public class ManageCreditCards {
 			cardNum = input.nextLine();
 		}
 		CreditCard card = cards.findCard(cardNum);
-
-		System.out.print("\n1. Display current balance" + "\n2. Display current credit limit \n3. Add a Purchase\n"
-				+ "4.  Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
-				+ "7. Display most recent Payment \n8. Exit to main menu");
-
-		int choice = input.nextInt();
-		while (choice < 1 || choice > 8) {
-			System.out.println("You can only enter 1-8. Please re-enter your choice");
-			System.out.println("Please choose a menu option: ");
+		boolean again = true;
+		do {
 			System.out.print("\n1. Display current balance" + "\n2. Display current credit limit \n3. Add a Purchase\n"
 					+ "4.  Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
 					+ "7. Display most recent Payment \n8. Exit to main menu");
-			System.out.print("");
-			choice = input.nextInt();
 
-		}
-		input.nextLine();
+			int choice = input.nextInt();
+			while (choice < 1 || choice > 8) {
+				System.out.println("You can only enter 1-8. Please re-enter your choice");
+				System.out.println("Please choose a menu option: ");
+				System.out.print(
+						"\n1. Display current balance" + "\n2. Display current credit limit \n3. Add a Purchase\n"
+								+ "4.  Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
+								+ "7. Display most recent Payment \n8. Exit to main menu");
+				System.out.print("");
+				choice = input.nextInt();
 
-		switch (choice) {
-		case 1:
-			System.out.println("The current balance of card " + cardNum + " is " + card.getCurrentBalance());
-			break;
-		case 2:
-			System.out.println("The current credit limit of card " + cardNum + " is " + card.getAvailCredit());
-			break;
-		case 3:
-			System.out.print("Please enter the purchase type: ");
-			String purchase = input.nextLine();
-			// figure out how to see if enum contains the String
-			// make into a purchase type
-			System.out.print("Please enter the amount: ");
-			double amount = input.nextDouble();
-			while (amount < 0) {
-				System.out.print("Invalid amount. Please re-enter the amount: ");
-				amount = input.nextDouble();
 			}
-			System.out.print("Please enter the vendor's name: ");
-			String name = input.nextLine();
-			System.out.print("Please enter the vendor's email address:  ex:xyz@gmail.com ");
-			String email = input.nextLine();
-			boolean checkEmail = checkEmailValidity(email);
-			while (!checkEmail) {
-				System.out.print("InValid email. Please re-enter the email address: ");
-				email = input.nextLine();
-				checkEmail = checkEmailValidity(email);
-			}
+			input.nextLine();
 
-			Vendor vendor = new Vendor(name, email);
-			card.addPurchase(new Purchase(amount, purchase, vendor));
-
-		case 4:
-			System.out.print("Please enter the payment type: ");
-			String payment = input.nextLine();
-			// figure out how to see if enum contains the String
-
-			System.out.print("Please enter the bank account ID affiliated with this payment: ");
-			break;
-		case 5:
-			System.out.print("Please enter the fee type: Choose 1 for Late Payment and 2 for Interest: ");
-			int feeOption = input.nextInt();
-			while (feeOption < 1 || feeOption > 2) {
-				System.out.println("Invalid option.");
-				System.out.print("1. Late Payment 2. Interest");
-				feeOption = input.nextInt();
-			}
-			FeeType fee;
-			switch (feeOption) {
+			switch (choice) {
 			case 1:
-				fee = FeeType.LATEPAYMENT;
+				System.out.println("The current balance of card " + cardNum + " is " + card.getCurrentBalance());
 				break;
 			case 2:
-				fee = FeeType.INTEREST;
+				System.out.println("The current credit limit of card " + cardNum + " is " + card.getAvailCredit());
 				break;
+			case 3:
+				System.out.print("Please enter the purchase type: ");
+				String purchase = input.nextLine();
+				// figure out how to see if enum contains the String
+				// make into a purchase type
+				System.out.print("Please enter the amount: ");
+				double amount = input.nextDouble();
+				while (amount < 0) {
+					System.out.print("Invalid amount. Please re-enter the amount: ");
+					amount = input.nextDouble();
+				}
+				System.out.print("Please enter the vendor's name: ");
+				String name = input.nextLine();
+				System.out.print("Please enter the vendor's email address:  ex:xyz@gmail.com ");
+				String email = input.nextLine();
+				boolean checkEmail = checkEmailValidity(email);
+				while (!checkEmail) {
+					System.out.print("InValid email. Please re-enter the email address: ");
+					email = input.nextLine();
+					checkEmail = checkEmailValidity(email);
+				}
+
+				Vendor vendor = new Vendor(name, email);
+				card.addPurchase(new Purchase(amount, purchase, vendor));
+
+			case 4:
+				System.out.print("Please enter the payment type: ");
+				String payment = input.nextLine();
+				// figure out how to see if enum contains the String
+
+				System.out.print("Please enter the bank account ID affiliated with this payment: ");
+				break;
+			case 5:
+				System.out.print("Please enter the fee type: Choose 1 for Late Payment and 2 for Interest: ");
+				int feeOption = input.nextInt();
+				while (feeOption < 1 || feeOption > 2) {
+					System.out.println("Invalid option.");
+					System.out.print("1. Late Payment 2. Interest");
+					feeOption = input.nextInt();
+				}
+				FeeType fee;
+				switch (feeOption) {
+				case 1:
+					fee = FeeType.LATEPAYMENT;
+					break;
+				case 2:
+					fee = FeeType.INTEREST;
+					break;
+				}
+				System.out.print("Please enter the amount: ");
+				double feeAmount = input.nextDouble();
+				while (feeAmount < 0) {
+					System.out.print("Invalid amount. Please re-enter the amount: ");
+					feeAmount = input.nextDouble();
+				}
+				card.addFee(new Fee(feeAmount, fee));
+				break;
+
+			default:
+				System.out.println("Returning to main menu...");
+				again = false;
 			}
-			System.out.print("Please enter the amount: ");
-			double feeAmount = input.nextDouble();
-			while (feeAmount < 0) {
-				System.out.print("Invalid amount. Please re-enter the amount: ");
-				feeAmount = input.nextDouble();
-			}
-			card.addFee(new Fee(feeAmount, fee));
-			break;
-			// make last case which exits
-		}
+		} while (again);
 	}
 
 	public static boolean checkEmailValidity(String emailaddress) {

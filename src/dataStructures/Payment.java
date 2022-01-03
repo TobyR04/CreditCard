@@ -22,9 +22,5 @@ public class Payment extends Transaction {
 		}
 	}
 
-	public boolean compareTo(Payment largest) {
-		// TODO Auto-generated method stub
-		return false;//what am I comparing here??/
-	}
 
 }

@@ -32,7 +32,7 @@ public class CreditCard {
 	}
 
 	public void addPurchase(Purchase purchase) {
-		// should we check if avaialable credit has enought
+		// should we check if avaialable credit has enought-same idea for other adds
 		currentBalance += purchase.getAmount();
 		availCredit -= purchase.getAmount();
 		transactions.add(purchase);
@@ -262,49 +262,9 @@ public class CreditCard {
 
 	}
 
-	// make method that returns which purchase the most money was spent for
-//	public PurchaseType getMostMoneySpent() {
-//
-//		double carTotal = getTotalCar();
-//		double clothTotal = getTotalClothing();
-//		double foodTotal = getTotalFood();
-//		double grocerTotal = getTotalGroceries();
-//		double lodgeTotal = getTotalLodging();
-//		double restaurantTotal = getTotalRestaurant();
-//		double travelTotal = getTotalTravel();
-//		double utilitiesTotal = getTotalUtilities();
-//
-//		double[] totals = { carTotal, clothTotal, foodTotal, grocerTotal, lodgeTotal, restaurantTotal, travelTotal,
-//				utilitiesTotal };
-//		PurchaseType[] types = { PurchaseType.CAR, PurchaseType.CLOTHING, PurchaseType.FOOD, PurchaseType.GROCERIES,
-//				PurchaseType.LODGING, PurchaseType.RESTAURANT, PurchaseType.TRAVEL, PurchaseType.UTILITIES };
-//
-//		double largest = totals[0];
-//		PurchaseType largestPurchase = types[0];
-//		for (int i = 1; i < totals.length; i++) {
-//			if (totals[i] > largest) {
-//				largest = totals[i];
-//				largestPurchase = types[i];
-//			}
-//
-//		}
-//		
-//		return largestPurchase;
-//	}
-
+	
 	public CreditCardStatus getCreditCardStatus() {
 		return creditCardStatus;
-	}
-
-	public String getCreditCardID() {
-		return creditCardId;
-	}
-
-	public int compareTo(CreditCard other) {
-		if (getMostRecentPurchase().compareTo(other.getMostRecentPurchase()) > 0) {
-			return 1;
-		}
-		return 0; // } see if we need this later
 	}
 
 	@Override

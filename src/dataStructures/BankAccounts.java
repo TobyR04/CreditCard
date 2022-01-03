@@ -14,7 +14,7 @@ public class BankAccounts {
 	
 	public BankAccount findAccount(String id) {
 		for (int i = 0; i < bankAccounts.size(); i++) {
-			if (bankAccounts.get(i).getAccountId().equals(id)) {
+			if (bankAccounts.get(i).equals(id)) {
 				return bankAccounts.get(i);
 			}
 		}
