@@ -204,6 +204,11 @@ public class ManageCreditCards {
 			System.out.println("This credit card already exists.");
 		}
 	}
+	private static void case2(Scanner input, CreditCards cards) {
+		String creditCardID = enterCreditCard(input, cards);
+		cards.removeCreditCard(creditCardID);
+		
+	}
 	
 	public static String enterCreditCard(Scanner input, CreditCards cards) {
 		System.out.print("Enter the Credit Card Number: ");
