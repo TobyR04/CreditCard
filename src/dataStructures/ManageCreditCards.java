@@ -275,9 +275,44 @@ public class ManageCreditCards {
 				break;
 			case 3:
 				System.out.print("Please enter the purchase type: ");
-				String purchase = input.nextLine();
-				// figure out how to see if enum contains the String
-				// make into a purchase type
+				System.out.print("1. Car \n2. Clothing \n3. Food \n4. Groceries"
+						+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities");
+				int type = input.nextInt();
+				if (type < 1 || type > 8) {
+					System.out.println("That is not a valid option. Please choose again.");
+					System.out.println("Enter the credit card type: (choose a number)");
+					System.out.println("1. Car \n2. Clothing \n3. Food \n4. Groceries"
+							+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities");
+					type = input.nextInt();
+				}
+				input.nextLine();
+				PurchaseType purType;
+				switch (type) {
+				case 1:
+					purType = PurchaseType.CAR;
+					break;
+				case 2:
+					purType = PurchaseType.CLOTHING;
+					break;
+				case 3:
+					purType = PurchaseType.FOOD;
+					break;
+				case 4:
+					purType = PurchaseType.GROCERIES;
+					break;
+				case 5:
+					purType = PurchaseType.LODGING;
+					break;
+					case6: purType = PurchaseType.RESTAURANT;
+					break;
+				case 7:
+					purType = PurchaseType.TRAVEL;
+					break;
+				case 8:
+					purType = PurchaseType.UTILITIES;
+					break;
+				}
+
 				System.out.print("Please enter the amount: ");
 				double amount = input.nextDouble();
 				while (amount < 0) {
@@ -296,7 +331,7 @@ public class ManageCreditCards {
 				}
 
 				Vendor vendor = new Vendor(name, email);
-				card.addPurchase(new Purchase(amount, purchase, vendor));
+				card.addPurchase(new Purchase(amount, purType, vendor));
 
 			case 4:
 					
