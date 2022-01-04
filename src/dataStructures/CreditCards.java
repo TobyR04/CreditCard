@@ -157,13 +157,7 @@ public class CreditCards {
 		}
 	}
 
-	public void removeCard(CreditCard creditCard) {
-		for (int i = 0; i < cards.size(); i++) {
-			if (cards.get(i).equals(creditCard)) {
-				cards.remove(i);
-			}
-		}
-	}
+	
 
 	public CreditCard findCard(String id) {
 		for (int i = 0; i < cards.size(); i++) {
@@ -172,6 +166,20 @@ public class CreditCards {
 			}
 		}
 		return null;
+	}
+	
+	public boolean removeCreditCard(String ccID) {
+		CreditCard tempCC= findCard(ccID);
+		if(tempCC == null) {
+			return false;
+		}
+		for (int i = 0; i < cards.size(); i++) {
+			if (cards.get(i).equals(tempCC)) {
+				cards.remove(i);
+				return true;
+			}
+		}		
+		return false;
 	}
 
 	public void addPurchase(CreditCard creditCard, Purchase purchase) {
