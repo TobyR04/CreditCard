@@ -383,6 +383,7 @@ public class ManageCreditCards {
 				break;
 			case 7:
 				System.out.println("the most recent payment is: "+card.getMostRecentPayment());
+				break;
 			default:
 				System.out.println("Returning to main menu...");
 				again = false;
