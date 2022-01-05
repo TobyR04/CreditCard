@@ -344,10 +344,22 @@ public class ManageCreditCards {
 
 			case 4:
 					
-				System.out.print("Please enter the payment type: ");
-				String payment = input.nextLine();
-				// figure out how to see if enum contains the String
-			
+				System.out.print("Please enter the PaymentType type: Choose 1 for Check and 2 for Online: ");
+				int paymentOption = input.nextInt();
+				while (paymentOption < 1 || paymentOption > 2) {
+					System.out.println("Invalid option.");
+					System.out.print("1. Check 2. Online");
+					paymentOption = input.nextInt();
+				}
+				PaymentType payment;
+				switch (paymentOption) {
+				case 1:
+					payment = PaymentType.CHECK;
+					break;
+				case 2:
+					payment = PaymentType.ONLINE;
+					break;
+				}
 				System.out.print("Please enter the bank account ID affiliated with this payment: ");
 				String bankID = input.nextLine();
 				while (bankAccounts.findAccount(bankID).equals(null)) {
