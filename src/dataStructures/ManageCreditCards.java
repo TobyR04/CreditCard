@@ -381,6 +381,8 @@ public class ManageCreditCards {
 			case 6:
 				System.out.println("The most recent purchase is " + card.getMostRecentPurchase());
 				break;
+			case 7:
+				System.out.println("the most recent payment is: "+card.getMostRecentPayment());
 			default:
 				System.out.println("Returning to main menu...");
 				again = false;
