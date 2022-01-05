@@ -66,6 +66,15 @@ public class ManageCreditCards {
 		case 2:
 			case2(input, cards);
 			break;
+		case 3:
+			System.out.println("The total outstanding balance: "+cards.totalBalance());
+			break;
+		case 4:
+			System.out.println("The total available credit is: "+cards.totalAvailCredit());
+			break;
+		case 5:
+			System.out.println("The largest purchase is: "+cards.getLargestPurchase());
+			break;
 		case 6:
 			// have validation to make sure that if there is no credit cards at all...
 			System.out.println("The most recent Payment is: " + cards.getMostRecentPayment());// make to String
