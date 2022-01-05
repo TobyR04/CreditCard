@@ -194,5 +194,21 @@ public class CreditCards {
 	public void addPayment(CreditCard creditCard, Payment payment) throws addPaymentException, cantPayException {
 		creditCard.addPayment(payment);
 	}
+	
+	public Purchase getLargestPurchase() {
+		ArrayList<Purchase> largePurchases = new ArrayList<>();
+		for(int i = 0; i < cards.size(); i++) {
+			largePurchases.add(cards.get(i).getLargestPurchase());
+		}
+		Purchase largest = largePurchases.get(0);
+
+		for (int i = 1; i < largePurchases.size(); i++) {
+			if (largePurchases.get(i).getAmount() > largest.getAmount()) {
+				largest = largePurchases.get(i);
+			}
+		}
+		return largest;
+	}
+
 
 }
