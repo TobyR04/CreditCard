@@ -432,10 +432,10 @@ public class ManageCreditCards {
 					card.addPayment(new Payment(paymentAmount, payment, account));
 				} catch (addPaymentException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				} catch (cantPayException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				break;
 
