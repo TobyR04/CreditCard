@@ -11,7 +11,6 @@ import java.util.*;
 public class ManageCreditCards {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner input = new Scanner(System.in);
 
 		menu(input);
@@ -20,7 +19,8 @@ public class ManageCreditCards {
 
 	public static void menu(Scanner input) {
 		CreditCards cards = new CreditCards();
-		BankAccounts bankAccounts = new BankAccounts();// add cards to this
+		BankAccounts bankAccounts = new BankAccounts();
+		Counter counter = new Counter(0);
 		boolean again = true;
 		do {
 			System.out.println("Please choose a menu option: ");
@@ -49,17 +49,16 @@ public class ManageCreditCards {
 			input.nextLine();
 
 			try {
-				again = chooseOption(choice, input, cards, bankAccounts);
+				again = chooseOption(choice, input, cards, bankAccounts, counter);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} while (again);
 
 	}
 
-	public static boolean chooseOption(int choice, Scanner input, CreditCards cards, BankAccounts bankAccounts)
-			throws ParseException {
+	public static boolean chooseOption(int choice, Scanner input, CreditCards cards, BankAccounts bankAccounts,
+			Counter counter) throws ParseException {
 
 		switch (choice) {
 		case 1:
@@ -69,7 +68,7 @@ public class ManageCreditCards {
 			case2(input, cards);
 			break;
 		case 3:
-			if (cards.isEmpty()) {// validation is off-saying there is no cards
+			if (cards.isEmpty()) {
 				System.out.println("You have no cards in your database at this time.");
 			} else {
 				System.out.println("The total outstanding balance: " + cards.totalBalance());
@@ -85,77 +84,32 @@ public class ManageCreditCards {
 		case 5:
 			if (cards.isEmpty()) {
 				System.out.println("You have no cards in your database at this time.");
-			} else if(cards.getLargestPurchase()==null){
+			} else if (cards.getLargestPurchase() == null) {
 				System.out.println("You have no purchases at this time.");
-			}
-			else {
+			} else {
 				System.out.println("The largest purchase is: " + cards.getLargestPurchase());
 			}
 			break;
 		case 6:
 			if (cards.isEmpty()) {
 				System.out.println("You have no cards in your database at this time.");
-			} 
-			else if(cards.getMostRecentPayment()==null){
+			} else if (cards.getMostRecentPayment() == null) {
 				System.out.println("You have no payments at this time.");
-			}
-			else {
+			} else {
 				System.out.println("The most recent Payment is: " + cards.getMostRecentPayment());
 			}
 			break;
 
 		case 7:
+			case7(input, cards);
 
-			if (cards.isEmpty()) {
-				System.out.println("You have no cards in your database at this time.");
-			} else {
-				System.out.println("Choose which expense total you would like to see: ");
-				System.out.print(
-						"1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
-				int option = input.nextInt();
-				while (option < 1 || option > 8) {
-					System.out.println("You entered an incorrect number. Please re-enter your option.");
-					System.out.print(
-							"1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
-					option = input.nextInt();
-				}
-				switch (option) {
-				case 1:
-					System.out.println("Car Total: " + cards.getTotalCar());
-					break;
-				case 2:
-					System.out.println("Clothing Total: " + cards.getTotalClothing());
-					break;
-				case 3:
-					System.out.println("Food Total: " + cards.getTotalFood());
-					break;
-				case 4:
-					System.out.println("Groceries Total: " + cards.getTotalGroceries());
-					break;
-				case 5:
-					System.out.println("Lodging Total: " + cards.getTotalLodging());
-					break;
-				case 6:
-					System.out.println("Restaurant Total: " + cards.getTotalRestaurant());
-					break;
-				case 7:
-					System.out.println("Travel Total: " + cards.getTotalTravel());
-					break;
-				case 8:
-					System.out.println("Utilities Total: " + cards.getTotalUtilities());
-					break;
-
-				}
-			}
 			break;
 		case 8:
 			if (cards.isEmpty()) {
 				System.out.println("You have no cards in your database at this time.");
-			} 
-			else if(cards.getMostPurchase()==null){
+			} else if (cards.getMostPurchase() == null) {
 				System.out.println("You have no purchases at this time.");
-			}
-			else {
+			} else {
 				System.out.println(cards.getMostPurchase());
 			}
 			break;
@@ -164,7 +118,7 @@ public class ManageCreditCards {
 				System.out.println("You have no cards in your database at this time.");
 			} else {
 
-				IndividualCardMenu(input, cards, bankAccounts);
+				IndividualCardMenu(input, cards, bankAccounts, counter);
 			}
 			break;
 		case 10:
@@ -205,7 +159,6 @@ public class ManageCreditCards {
 		try {
 			expDate = formatter.parse(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -247,9 +200,60 @@ public class ManageCreditCards {
 
 	}
 
-	private static void case2(Scanner input, CreditCards cards) {
-		String creditCardID = enterCreditCard(input, cards);
-		cards.removeCreditCard(creditCardID);
+	public static void case2(Scanner input, CreditCards cards) {
+		System.out.print("Enter the Credit Card Number: ");
+		String creditCardID = input.nextLine();
+		if (cards.contains(creditCardID)) {
+			cards.removeCreditCard(creditCardID);
+		} else {
+			System.out.println("You don't have this card in your database.");
+		}
+
+	}
+
+	public static void case7(Scanner input, CreditCards cards) {
+
+		if (cards.isEmpty()) {
+			System.out.println("You have no cards in your database at this time.");
+		} else {
+			System.out.println("Choose which expense total you would like to see: ");
+			System.out
+					.print("1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
+			int option = input.nextInt();
+			while (option < 1 || option > 8) {
+				System.out.println("You entered an incorrect number. Please re-enter your option.");
+				System.out.print(
+						"1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
+				option = input.nextInt();
+			}
+			switch (option) {
+			case 1:
+				System.out.println("Car Total: " + cards.getTotalCar());
+				break;
+			case 2:
+				System.out.println("Clothing Total: " + cards.getTotalClothing());
+				break;
+			case 3:
+				System.out.println("Food Total: " + cards.getTotalFood());
+				break;
+			case 4:
+				System.out.println("Groceries Total: " + cards.getTotalGroceries());
+				break;
+			case 5:
+				System.out.println("Lodging Total: " + cards.getTotalLodging());
+				break;
+			case 6:
+				System.out.println("Restaurant Total: " + cards.getTotalRestaurant());
+				break;
+			case 7:
+				System.out.println("Travel Total: " + cards.getTotalTravel());
+				break;
+			case 8:
+				System.out.println("Utilities Total: " + cards.getTotalUtilities());
+				break;
+
+			}
+		}
 
 	}
 
@@ -292,7 +296,8 @@ public class ManageCreditCards {
 		return creditCardID;
 	}
 
-	public static void IndividualCardMenu(Scanner input, CreditCards cards, BankAccounts bankAccounts) {
+	public static void IndividualCardMenu(Scanner input, CreditCards cards, BankAccounts bankAccounts,
+			Counter counter) {
 		System.out.print("Manage a specific credit card. Please input your credit card number: ");
 		String cardNum = input.nextLine();
 		while (cards.findCard(cardNum) == (null)) {
@@ -395,48 +400,7 @@ public class ManageCreditCards {
 				break;
 
 			case 4:
-				while (bankAccounts.isEmpty()) {
-					System.out.print(
-							"You have no bank accounts added. Please add a bank account before you make a payment. ");
-					addBankAccount(input, bankAccounts);
-				}
-				System.out.print("Please enter the PaymentType type: Choose 1 for Check and 2 for Online: ");
-				int paymentOption = input.nextInt();
-				while (paymentOption < 1 || paymentOption > 2) {
-					System.out.println("Invalid option.");
-					System.out.print("1. Check 2. Online ");
-					paymentOption = input.nextInt();
-				}
-				PaymentType payment = null;
-				switch (paymentOption) {
-				case 1:
-					payment = PaymentType.CHECK;
-					break;
-				case 2:
-					payment = PaymentType.ONLINE;
-					break;
-				}
-				input.nextLine();
-				System.out.print("Please enter the bank account ID affiliated with this payment: ");
-				String bankID = input.nextLine();
-				while (bankAccounts.findAccount(bankID) == null) {
-					System.out.print("You entered an incorrect bank number. Please try again. ");
-					bankID = input.nextLine();
-				}
-				BankAccount account = bankAccounts.findAccount(bankID);
-
-				System.out.print("Please enter how much you would like to pay. ");
-				double paymentAmount = input.nextDouble();
-
-				try {
-					card.addPayment(new Payment(paymentAmount, payment, account));
-				} catch (addPaymentException e) {
-					// TODO Auto-generated catch block
-					System.out.println(e.getMessage());
-				} catch (cantPayException e) {
-					// TODO Auto-generated catch block
-					System.out.println(e.getMessage());
-				}
+				individCaseFour(input, bankAccounts, card, counter);
 				break;
 
 			case 5:
@@ -465,10 +429,18 @@ public class ManageCreditCards {
 				card.addFee(new Fee(feeAmount, fee));
 				break;
 			case 6:
-				System.out.println("The most recent purchase is " + card.getMostRecentPurchase());
+				if (card.getMostRecentPurchase() == null) {
+					System.out.println("You did not make any purchases.");
+				} else {
+					System.out.println("The most recent purchase is " + card.getMostRecentPurchase());
+				}
 				break;
 			case 7:
-				System.out.println("the most recent payment is: " + card.getMostRecentPayment());
+				if (card.getMostRecentPayment() == null) {
+					System.out.println("You did not make any payments.");
+				} else {
+					System.out.println("the most recent payment is: " + card.getMostRecentPayment());
+				}
 				break;
 			default:
 				System.out.println("Returning to main menu...");
@@ -487,26 +459,67 @@ public class ManageCreditCards {
 		return email_valid;
 	}
 
+	public static void individCaseFour(Scanner input, BankAccounts bankAccounts, CreditCard card, Counter counter) {
+		while (bankAccounts.isEmpty()) {
+			System.out.print("You have no bank accounts added. Please add a bank account before you make a payment. ");
+			addBankAccount(input, bankAccounts);
+		}
+		System.out.print("Please enter the PaymentType type: Choose 1 for Check and 2 for Online: ");
+		int paymentOption = input.nextInt();
+		while (paymentOption < 1 || paymentOption > 2) {
+			System.out.println("Invalid option.");
+			System.out.print("1. Check 2. Online ");
+			paymentOption = input.nextInt();
+		}
+		PaymentType payment = null;
+		switch (paymentOption) {
+		case 1:
+			payment = PaymentType.CHECK;
+			break;
+		case 2:
+			payment = PaymentType.ONLINE;
+			break;
+		}
+		input.nextLine();
+		System.out.print("Please enter the bank account ID affiliated with this payment: ");
+		String bankID = input.nextLine();
+		while (bankAccounts.findAccount(bankID) == null) {
+			System.out.print("You entered an incorrect bank number. Please try again. ");
+			bankID = input.nextLine();
+		}
+		BankAccount account = bankAccounts.findAccount(bankID);
+
+		System.out.print("Please enter how much you would like to pay. ");
+		double paymentAmount = input.nextDouble();
+		counter.increment();
+		try {
+			card.addPayment(new Payment(paymentAmount, payment, account, counter.getIncCounter()));
+		} catch (addPaymentException e) {
+			System.out.println(e.getMessage());
+		} catch (cantPayException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	public static void addBankAccount(Scanner input, BankAccounts bankAccounts) {
-		String bankName=null;
-		String bankID=null;
-		double balance =0;
+		String bankName = null;
+		String bankID = null;
+		double balance = 0;
 		do {
-		if(bankAccounts.contains(bankID)) {
-			System.out.println("You already have that bank added. Please add a different one");
-		}
-		System.out.print("Please enter the bank name: ");
-		bankName = input.nextLine();
-		System.out.print("Please enter the bank ID: ");	
-		 bankID = input.nextLine();
-		System.out.print("Please enter the balance: ");
-		 balance = input.nextDouble();
-		while (balance < 0) {
-			System.out.print("Invalid amount. Please enter the amount again:");
+			if (bankAccounts.contains(bankID)) {
+				System.out.println("You already have that bank added. Please add a different one");
+			}
+			System.out.print("Please enter the bank name: ");
+			bankName = input.nextLine();
+			System.out.print("Please enter the bank ID: ");
+			bankID = input.nextLine();
+			System.out.print("Please enter the balance: ");
 			balance = input.nextDouble();
-		}
-		}
-		while(bankAccounts.contains(bankID));
+			while (balance < 0) {
+				System.out.print("Invalid amount. Please enter the amount again:");
+				balance = input.nextDouble();
+			}
+		} while (bankAccounts.contains(bankID));
 		bankAccounts.addBankAccount(new BankAccount(bankName, bankID, balance));
 	}
 }

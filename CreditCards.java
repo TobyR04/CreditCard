@@ -36,16 +36,31 @@ public class CreditCards {
 	}
 
 	public Payment getMostRecentPayment() {
-		Payment recent = cards.get(0).getMostRecentPayment();
-		// assuming last credit card added has the most recent payment
-		for (int i = cards.size() - 1; i > 0; i--) {
-			if (!cards.get(i).getMostRecentPayment().equals(null)) {
-				return cards.get(i).getMostRecentPayment();
+		ArrayList<Payment> payments = new ArrayList<Payment>();
+		for (int i = 0; i < cards.size(); i++) {
 
-			}
+			payments.add((Payment) cards.get(i).getMostRecentPayment());
 
 		}
-		return null;
+
+		int larger = 0;
+		Payment large = null;
+
+		if (!payments.isEmpty()) {
+			for (int i = 0; i < payments.size(); i++) {
+
+				if(payments.get(i)==null) {
+
+					continue;
+				}
+				else if (payments.get(i).getCounter() > larger) {
+					larger = payments.get(i).getCounter();
+					large = payments.get(i);
+
+				}
+			}
+		}
+		return large;
 
 	}
 
@@ -146,8 +161,8 @@ public class CreditCards {
 			}
 
 		}
-		
-		if(largest==0) {
+
+		if (largest == 0) {
 			return null;
 		}
 		return largestPurchase;
@@ -199,19 +214,28 @@ public class CreditCards {
 	public Purchase getLargestPurchase() {
 		ArrayList<Purchase> largePurchases = new ArrayList<>();
 		for (int i = 0; i < cards.size(); i++) {
-			largePurchases.add(cards.get(i).getLargestPurchase());
+			if (cards.get(i).getLargestPurchase() == null) {
+				continue;
+			} else {
+				largePurchases.add(cards.get(i).getLargestPurchase());
+			}
 		}
-		
-		if(largePurchases.isEmpty()){
+
+		if (largePurchases.isEmpty()) {
 			return null;
 		}
-		
+
 		Purchase largest = largePurchases.get(0);
+
+		if (largePurchases.size() < 2) {
+			return largest;
+		}
 
 		for (int i = 1; i < largePurchases.size(); i++) {
 			if (largePurchases.get(i).getAmount() > largest.getAmount()) {
 				largest = largePurchases.get(i);
 			}
+
 		}
 		return largest;
 	}
