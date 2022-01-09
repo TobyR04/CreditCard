@@ -2,6 +2,7 @@ package dataStructures;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -10,7 +11,6 @@ import java.util.*;
 public class ManageCreditCards {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner input = new Scanner(System.in);
 
 		menu(input);
@@ -18,6 +18,9 @@ public class ManageCreditCards {
 	}
 
 	public static void menu(Scanner input) {
+		CreditCards cards = new CreditCards();
+		BankAccounts bankAccounts = new BankAccounts();
+		Counter counter = new Counter(0);
 		boolean again = true;
 		do {
 			System.out.println("Please choose a menu option: ");
@@ -46,18 +49,16 @@ public class ManageCreditCards {
 			input.nextLine();
 
 			try {
-				again = chooseOption(choice, input);
+				again = chooseOption(choice, input, cards, bankAccounts, counter);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} while (again);
 
 	}
 
-	public static boolean chooseOption(int choice, Scanner input) throws ParseException {
-		CreditCards cards = new CreditCards();
-		BankAccounts bankAccounts = new BankAccounts();// add cards to this
+	public static boolean chooseOption(int choice, Scanner input, CreditCards cards, BankAccounts bankAccounts,
+			Counter counter) throws ParseException {
 
 		switch (choice) {
 		case 1:
@@ -67,23 +68,157 @@ public class ManageCreditCards {
 			case2(input, cards);
 			break;
 		case 3:
-			System.out.println("The total outstanding balance: "+cards.totalBalance());
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else {
+				System.out.println("The total outstanding balance: " + cards.totalBalance());
+			}
 			break;
 		case 4:
-			System.out.println("The total available credit is: "+cards.totalAvailCredit());
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else {
+				System.out.println("The total available credit is: " + cards.totalAvailCredit());
+			}
 			break;
 		case 5:
-			System.out.println("The largest purchase is: "+cards.getLargestPurchase());
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else if (cards.getLargestPurchase() == null) {
+				System.out.println("You have no purchases at this time.");
+			} else {
+				System.out.println("The largest purchase is: " + cards.getLargestPurchase());
+			}
 			break;
 		case 6:
-			// have validation to make sure that if there is no credit cards at all...
-			System.out.println("The most recent Payment is: " + cards.getMostRecentPayment());// make to String
-			break; // methods!!!
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else if (cards.getMostRecentPayment() == null) {
+				System.out.println("You have no payments at this time.");
+			} else {
+				System.out.println("The most recent Payment is: " + cards.getMostRecentPayment());
+			}
+			break;
 
 		case 7:
-			// have validation to make sure that if there is no credit cards at all...
+			case7(input, cards);
+
+			break;
+		case 8:
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else if (cards.getMostPurchase() == null) {
+				System.out.println("You have no purchases at this time.");
+			} else {
+				System.out.println(cards.getMostPurchase());
+			}
+			break;
+		case 9:
+			if (cards.isEmpty()) {
+				System.out.println("You have no cards in your database at this time.");
+			} else {
+
+				IndividualCardMenu(input, cards, bankAccounts, counter);
+			}
+			break;
+		case 10:
+			addBankAccount(input, bankAccounts);
+			break;
+		default:
+			System.out.println("Goodbye...Exiting...");
+			return false;
+
+		}
+		return true;
+	}
+
+	public static boolean isDateFormat(String date) {
+		boolean dateCorrect = true;
+		if (date.matches("(0?[1-9]|1[012])-((?:19|20)[0-9][0-9])"))
+			dateCorrect = true;
+		else
+			dateCorrect = false;
+
+		return dateCorrect;
+
+	}
+
+	public static void case1(Scanner input, CreditCards creditCards) {
+		String creditCardID = enterCreditCard(input, creditCards);
+		Date expDate = null;
+		System.out.print("Enter the expiration date: (mm-yyyy)");
+		String date = input.nextLine();
+
+		while (!isDateFormat(date)) {
+			System.out.println("Invalid date. Please try again.");
+			System.out.print("Enter the expiration date: (mm-yyyy)");
+			date = input.nextLine();
+		}
+		SimpleDateFormat formatter = new SimpleDateFormat("mm-yyyy");
+
+		try {
+			expDate = formatter.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		System.out.print("Enter the company that issued the credit card: ");
+		String issueCompany = input.nextLine();
+
+		System.out.println("Enter the credit card type: (choose a number)");
+		System.out.println("1. VISA \n2. MASTERCARD \n3. AMEX");
+		int type = input.nextInt();
+		while (type < 1 || type > 3) {
+			System.out.println("That is not a valid option. Please choose again.");
+			System.out.println("Enter the credit card type: (choose a number)");
+			System.out.println("1. VISA \n2.MASTERCARD \n3.AMEX");
+			type = input.nextInt();
+		}
+		input.nextLine();
+		CreditCardType CC_Type = null;
+		switch (type) {
+		case 1:
+			CC_Type = CreditCardType.VISA;
+			break;
+		case 2:
+			CC_Type = CreditCardType.MASTERCARD;
+			break;
+		case 3:
+			CC_Type = CreditCardType.AMEX;
+			break;
+		}
+
+		System.out.print("Enter the credit limit: ");
+		double creditCardLimit = input.nextDouble();
+		while (creditCardLimit < 0) {
+			System.out.println("Invalid Limit. Please enter the limit again.");
+			System.out.print("Enter the credit limit: ");
+			creditCardLimit = input.nextDouble();
+		}
+		CreditCard newCreditCard = new CreditCard(creditCardID, expDate, issueCompany, CC_Type, creditCardLimit);
+		creditCards.addCard(newCreditCard);
+
+	}
+
+	public static void case2(Scanner input, CreditCards cards) {
+		System.out.print("Enter the Credit Card Number: ");
+		String creditCardID = input.nextLine();
+		if (cards.contains(creditCardID)) {
+			cards.removeCreditCard(creditCardID);
+		} else {
+			System.out.println("You don't have this card in your database.");
+		}
+
+	}
+
+	public static void case7(Scanner input, CreditCards cards) {
+
+		if (cards.isEmpty()) {
+			System.out.println("You have no cards in your database at this time.");
+		} else {
 			System.out.println("Choose which expense total you would like to see: ");
-			System.out.print("1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
+			System.out
+					.print("1. Car 2. Clothing 3. Food 4. Groceries 5. Lodging 6. Restaurant 7. Travel 8. Utilities ");
 			int option = input.nextInt();
 			while (option < 1 || option > 8) {
 				System.out.println("You entered an incorrect number. Please re-enter your option.");
@@ -118,139 +253,54 @@ public class ManageCreditCards {
 				break;
 
 			}
-			break;
-		case 8:
-			// have validation to make sure that if there is no credit cards at all...
-			System.out.println(cards.getMostPurchase());
-			break;
-		case 9:
-
-			IndividualCardMenu(input, cards);
-			break;
-		case 10:
-			System.out.print("Please enter the bank name: ");
-			String bankName = input.nextLine();
-			System.out.print("Please enter the bank ID: ");
-			String bankID = input.nextLine();
-			System.out.print("Please enter the balance: ");
-			double balance = input.nextDouble();
-			while (balance < 0) {
-				System.out.print("Invalid amount. Please enter the amount again:");
-				balance = input.nextDouble();
-			}
-			bankAccounts.addBankAccount(new BankAccount(bankName, bankID, balance));
-			break;
-		default:
-			System.out.println("Goodbye...Exiting...");
-			return false;
-
 		}
-		return true;
 
-//		
-//	    public boolean isValid(String dateStr) {
-//	        SimpleDateFormat sdf = new SimpleDateFormat(this.dateFormat);
-//	        sdf.setLenient(false);
-//	        try {
-//	            sdf.parse(dateStr);
-//	        } catch (ParseException e) {
-//	            return false;
-//	        }
-//	        return true;
-//	    }
 	}
-	public static void case1(Scanner input, CreditCards creditCards) {
-		String creditCardID = enterCreditCard(input, creditCards);
-		Date expDate;
-		try {
-			System.out.print("Enter the expiration date: (mm-yyyy)");
-			String date = input.nextLine();
-			SimpleDateFormat formatter = new SimpleDateFormat("mm-yyyy");
-			expDate = formatter.parse(date);
-		}
-		catch(ParseException e) {
-			//figure out how to catch validating
-		}
-		
-		System.out.print("Enter the company that issued the credit card: ");
-		String issueCompany = input.nextLine();
 
-		System.out.println("Enter the credit card type: (choose a number)");
-		System.out.println("1. VISA \n2.MASTERCARD \n3.AMEX");
-		int type = input.nextInt();
-		if(type < 1 || type > 3) {
-			System.out.println("That is not a valid option. Please choose again.");
-			System.out.println("Enter the credit card type: (choose a number)");
-			System.out.println("1. VISA \n2.MASTERCARD \n3.AMEX");
-			type = input.nextInt();
-		}
-		input.nextLine();
-		CreditCardType CC_Type;
-		switch (type) {
-			case 1:
-				CC_Type = CreditCardType.VISA;
-				break;
-			case 2:
-				CC_Type = CreditCardType.MASTERCARD;
-				break;
-			case 3:
-				CC_Type = CreditCardType.AMEX;
-				break;
-		}
-
-		System.out.print("Enter the credit limit: ");
-		double creditCardLimit = input.nextDouble();
-		while(creditCardLimit < 0) {
-			System.out.println("Invalid Limit. Please enter the limit again.");
-			System.out.print("Enter the credit limit: ");
-			creditCardLimit = input.nextDouble();
-		}
-		CreditCard newCreditCard = new CreditCard(creditCardID,expDate,issueCompany, CC_Type, creditCardLimit); //have to change from date to local date
-		if(!creditCards.contains(newCreditCard)) {
-			creditCards.addCard(newCreditCard);
-		}
-		else {
-			System.out.println("This credit card already exists.");
-		}
-	}
-	private static void case2(Scanner input, CreditCards cards) {
-		String creditCardID = enterCreditCard(input, cards);
-		cards.removeCreditCard(creditCardID);
-		
-	}
-	
 	public static String enterCreditCard(Scanner input, CreditCards cards) {
-		System.out.print("Enter the Credit Card Number: ");
-		String creditCardID = input.nextLine();
-		boolean correct = true;
+		String creditCardID = null;
+		do {
+			if (cards.contains(creditCardID))
 
-		if (creditCardID.charAt(0) != ('3') || creditCardID.charAt(0) != ('4') || creditCardID.charAt(0) != ('5')) {
-			correct = false;
-		}
-		if ((creditCardID.charAt(0) == ('3') && creditCardID.length() != 15)
-				|| ((creditCardID.charAt(0) == ('5') || creditCardID.charAt(0) == ('4'))
-						&& creditCardID.length() != 16)) {
-			correct = false;
-		}
-		while (correct == false) {
-			System.out.println("The credit card number that you enterd is incorrect.");
-			System.out.println("Please enter the credit card number again.");
+			{
+				System.out.println("This credit card already exists.");
+			}
 			System.out.print("Enter the Credit Card Number: ");
 			creditCardID = input.nextLine();
-			correct = true;
+			boolean correct = true;
+
+			if (creditCardID.charAt(0) != ('3') && creditCardID.charAt(0) != ('4') && creditCardID.charAt(0) != ('5')) {
+				correct = false;
+
+			}
 			if ((creditCardID.charAt(0) == ('3') && creditCardID.length() != 15)
 					|| ((creditCardID.charAt(0) == ('5') || creditCardID.charAt(0) == ('4'))
 							&& creditCardID.length() != 16)) {
 				correct = false;
 			}
-		}
+
+			while (correct == false) {
+				System.out.println("The credit card number that you entered is incorrect.");
+				System.out.println("Please enter the credit card number again.");
+				System.out.print("Enter the Credit Card Number: ");
+				creditCardID = input.nextLine();
+				correct = true;
+				if ((creditCardID.charAt(0) == ('3') && creditCardID.length() != 15)
+						|| ((creditCardID.charAt(0) == ('5') || creditCardID.charAt(0) == ('4'))
+								&& creditCardID.length() != 16)) {
+					correct = false;
+				}
+			}
+		} while (cards.contains(creditCardID));
+
 		return creditCardID;
 	}
-	
-	public static void IndividualCardMenu(Scanner input, CreditCards cards) {
+
+	public static void IndividualCardMenu(Scanner input, CreditCards cards, BankAccounts bankAccounts,
+			Counter counter) {
 		System.out.print("Manage a specific credit card. Please input your credit card number: ");
 		String cardNum = input.nextLine();
-		while (cards.findCard(cardNum).equals(null)) {
+		while (cards.findCard(cardNum) == (null)) {
 			System.out.print("You entered an incorrect credit card number. Please try again. ");
 			cardNum = input.nextLine();
 		}
@@ -258,8 +308,8 @@ public class ManageCreditCards {
 		boolean again = true;
 		do {
 			System.out.print("\n1. Display current balance" + "\n2. Display current credit limit \n3. Add a Purchase\n"
-					+ "4.  Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
-					+ "7. Display most recent Payment \n8. Exit to main menu");
+					+ "4. Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
+					+ "7. Display most recent Payment \n8. Exit to main menu ");
 
 			int choice = input.nextInt();
 			while (choice < 1 || choice > 8) {
@@ -267,14 +317,14 @@ public class ManageCreditCards {
 				System.out.println("Please choose a menu option: ");
 				System.out.print(
 						"\n1. Display current balance" + "\n2. Display current credit limit \n3. Add a Purchase\n"
-								+ "4.  Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
-								+ "7. Display most recent Payment \n8. Exit to main menu");
+								+ "4. Add a Payment\n" + "5. Add a Fee\n" + "6. Display most recent Purchase\n"
+								+ "7. Display most recent Payment \n8. Exit to main menu ");
 				System.out.print("");
 				choice = input.nextInt();
 
 			}
 			input.nextLine();
-
+			PurchaseType purType = null;
 			switch (choice) {
 			case 1:
 				System.out.println("The current balance of card " + cardNum + " is " + card.getCurrentBalance());
@@ -284,18 +334,18 @@ public class ManageCreditCards {
 				break;
 			case 3:
 				System.out.print("Please enter the purchase type: ");
-				System.out.print("1. Car \n2. Clothing \n3. Food \n4. Groceries"
-						+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities");
+				System.out.print("\n1. Car \n2. Clothing \n3. Food \n4. Groceries"
+						+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities ");
 				int type = input.nextInt();
-				if (type < 1 || type > 8) {
+				while (type < 1 || type > 8) {
 					System.out.println("That is not a valid option. Please choose again.");
 					System.out.println("Enter the credit card type: (choose a number)");
 					System.out.println("1. Car \n2. Clothing \n3. Food \n4. Groceries"
-							+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities");
+							+ "\n5. Lodging \n6. Restaurant \n7. Travel \n8. Utilities ");
 					type = input.nextInt();
 				}
 				input.nextLine();
-				PurchaseType purType;
+
 				switch (type) {
 				case 1:
 					purType = PurchaseType.CAR;
@@ -312,7 +362,8 @@ public class ManageCreditCards {
 				case 5:
 					purType = PurchaseType.LODGING;
 					break;
-					case6: purType = PurchaseType.RESTAURANT;
+				case 6:
+					purType = PurchaseType.RESTAURANT;
 					break;
 				case 7:
 					purType = PurchaseType.TRAVEL;
@@ -328,61 +379,39 @@ public class ManageCreditCards {
 					System.out.print("Invalid amount. Please re-enter the amount: ");
 					amount = input.nextDouble();
 				}
+				if (amount > card.getAvailCredit()) {
+					System.out.println("Sorry, you cannot make this purchase. It's over your credit limit.");
+					break;
+				}
+				input.nextLine();
 				System.out.print("Please enter the vendor's name: ");
 				String name = input.nextLine();
 				System.out.print("Please enter the vendor's email address:  ex:xyz@gmail.com ");
 				String email = input.nextLine();
 				boolean checkEmail = checkEmailValidity(email);
 				while (!checkEmail) {
-					System.out.print("InValid email. Please re-enter the email address: ");
+					System.out.print("Invalid email. Please re-enter the email address: ");
 					email = input.nextLine();
 					checkEmail = checkEmailValidity(email);
 				}
 
 				Vendor vendor = new Vendor(name, email);
 				card.addPurchase(new Purchase(amount, purType, vendor));
+				break;
 
 			case 4:
-					
-				System.out.print("Please enter the PaymentType type: Choose 1 for Check and 2 for Online: ");
-				int paymentOption = input.nextInt();
-				while (paymentOption < 1 || paymentOption > 2) {
-					System.out.println("Invalid option.");
-					System.out.print("1. Check 2. Online");
-					paymentOption = input.nextInt();
-				}
-				PaymentType payment;
-				switch (paymentOption) {
-				case 1:
-					payment = PaymentType.CHECK;
-					break;
-				case 2:
-					payment = PaymentType.ONLINE;
-					break;
-				}
-				System.out.print("Please enter the bank account ID affiliated with this payment: ");
-				String bankID = input.nextLine();
-				while (bankAccounts.findAccount(bankID).equals(null)) {
-					System.out.print("You entered an incorrect bank number. Please try again. ");
-					bankID = input.nextLine();
-				}
-				BankAccount account = bankAccounts.findAccount(bankID);
-			
-				System.out.print("Please enter how much you would like to pay.");
-				double paymentAmount = input.nextDouble();
-			
-				card.addPayment(new Payment(paymentAmount, payment, account));
+				individCaseFour(input, bankAccounts, card, counter);
 				break;
-				
+
 			case 5:
 				System.out.print("Please enter the fee type: Choose 1 for Late Payment and 2 for Interest: ");
 				int feeOption = input.nextInt();
 				while (feeOption < 1 || feeOption > 2) {
 					System.out.println("Invalid option.");
-					System.out.print("1. Late Payment 2. Interest");
+					System.out.print("1. Late Payment 2. Interest ");
 					feeOption = input.nextInt();
 				}
-				FeeType fee;
+				FeeType fee = null;
 				switch (feeOption) {
 				case 1:
 					fee = FeeType.LATEPAYMENT;
@@ -400,10 +429,18 @@ public class ManageCreditCards {
 				card.addFee(new Fee(feeAmount, fee));
 				break;
 			case 6:
-				System.out.println("The most recent purchase is " + card.getMostRecentPurchase());
+				if (card.getMostRecentPurchase() == null) {
+					System.out.println("You did not make any purchases.");
+				} else {
+					System.out.println("The most recent purchase is " + card.getMostRecentPurchase());
+				}
 				break;
 			case 7:
-				System.out.println("the most recent payment is: "+card.getMostRecentPayment());
+				if (card.getMostRecentPayment() == null) {
+					System.out.println("You did not make any payments.");
+				} else {
+					System.out.println("the most recent payment is: " + card.getMostRecentPayment());
+				}
 				break;
 			default:
 				System.out.println("Returning to main menu...");
@@ -413,16 +450,76 @@ public class ManageCreditCards {
 	}
 
 	public static boolean checkEmailValidity(String emailaddress) {
-		String email_regex = "[A-Z]+[a-zA-Z_]+@\b([a-zA-Z]+.){2}\b?.[a-zA-Z]+";
-		boolean b = emailaddress.matches(email_regex);
-		return b;
+		boolean email_valid = true;
+		if (emailaddress.matches("[\\w]+@[\\w]+\\.[a-zA-Z]{2,3}"))
+			email_valid = true;
+		else
+			email_valid = false;
+
+		return email_valid;
+	}
+
+	public static void individCaseFour(Scanner input, BankAccounts bankAccounts, CreditCard card, Counter counter) {
+		while (bankAccounts.isEmpty()) {
+			System.out.print("You have no bank accounts added. Please add a bank account before you make a payment. ");
+			addBankAccount(input, bankAccounts);
+		}
+		System.out.print("Please enter the PaymentType type: Choose 1 for Check and 2 for Online: ");
+		int paymentOption = input.nextInt();
+		while (paymentOption < 1 || paymentOption > 2) {
+			System.out.println("Invalid option.");
+			System.out.print("1. Check 2. Online ");
+			paymentOption = input.nextInt();
+		}
+		PaymentType payment = null;
+		switch (paymentOption) {
+		case 1:
+			payment = PaymentType.CHECK;
+			break;
+		case 2:
+			payment = PaymentType.ONLINE;
+			break;
+		}
+		input.nextLine();
+		System.out.print("Please enter the bank account ID affiliated with this payment: ");
+		String bankID = input.nextLine();
+		while (bankAccounts.findAccount(bankID) == null) {
+			System.out.print("You entered an incorrect bank number. Please try again. ");
+			bankID = input.nextLine();
+		}
+		BankAccount account = bankAccounts.findAccount(bankID);
+
+		System.out.print("Please enter how much you would like to pay. ");
+		double paymentAmount = input.nextDouble();
+		counter.increment();
+		try {
+			card.addPayment(new Payment(paymentAmount, payment, account, counter.getIncCounter()));
+		} catch (addPaymentException e) {
+			System.out.println(e.getMessage());
+		} catch (cantPayException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void addBankAccount(Scanner input, BankAccounts bankAccounts) {
+		String bankName = null;
+		String bankID = null;
+		double balance = 0;
+		do {
+			if (bankAccounts.contains(bankID)) {
+				System.out.println("You already have that bank added. Please add a different one");
+			}
+			System.out.print("Please enter the bank name: ");
+			bankName = input.nextLine();
+			System.out.print("Please enter the bank ID: ");
+			bankID = input.nextLine();
+			System.out.print("Please enter the balance: ");
+			balance = input.nextDouble();
+			while (balance < 0) {
+				System.out.print("Invalid amount. Please enter the amount again:");
+				balance = input.nextDouble();
+			}
+		} while (bankAccounts.contains(bankID));
+		bankAccounts.addBankAccount(new BankAccount(bankName, bankID, balance));
 	}
 }
-
-//	a. Display current balance
-//	b. Display current credit limit
-//	c. Add a Purchase
-//	d. Add a Payment-Faygie will finish
-//	e. Add a Fee-Toby
-//	f. Display most recent Purchase-Faygie
-//	g. Display most recent Payment-Chaya

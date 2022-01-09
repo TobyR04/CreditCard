@@ -44,4 +44,8 @@ public class BankAccount {
 			return false;
 		}
 	}
+	
+	public String getBankID() {
+		return accountID;
+	}
 }

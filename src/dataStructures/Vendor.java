@@ -10,4 +10,11 @@ public class Vendor {
 		this.email=email;
 	}
 
+	@Override
+	public String toString() {
+		return "Vendor name: " + name;
+	}
+	
+	
+
 }

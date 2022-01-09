@@ -2,22 +2,24 @@ package dataStructures;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 public class CreditCard {
 
 	private String creditCardId;
 	private LocalDate issueDate;
-	private LocalDate expirationDate;
-	private String issueCompany;// is this right?
-	private CreditCardType creditCardType; // create enum
-	private CreditCardStatus creditCardStatus;// create enum
+	private Date expirationDate;
+	private String issueCompany;
+	private CreditCardType creditCardType;
+	private CreditCardStatus creditCardStatus;
 	private double creditCardLimit;
 	private double currentBalance;
 	private double availCredit;
-	private ArrayList<Transaction> transactions; // create class
+	private ArrayList<Transaction> transactions;
 	private double[] totals;
 
-	public CreditCard(String creditCardID, LocalDate expirationDate, String issueCompany, CreditCardType creditCardType,
+	public CreditCard(String creditCardID, Date expirationDate, String issueCompany, CreditCardType creditCardType,
 			double creditCardLimit) {
 		this.creditCardId = creditCardID;
 		issueDate = LocalDate.now();
@@ -32,7 +34,6 @@ public class CreditCard {
 	}
 
 	public void addPurchase(Purchase purchase) {
-		// should we check if avaialable credit has enought-same idea for other adds
 		currentBalance += purchase.getAmount();
 		availCredit -= purchase.getAmount();
 		transactions.add(purchase);
@@ -44,12 +45,14 @@ public class CreditCard {
 			if (payment.getAmount() > currentBalance) {
 				throw new addPaymentException();
 			}
-			payment.withdrawal(payment.getAmount());
-			currentBalance -= payment.getAmount();
-			availCredit += payment.getAmount();
-			transactions.add(payment);
+			if (payment.withdrawal(payment.getAmount())) {
+				currentBalance -= payment.getAmount();
+				availCredit += payment.getAmount();
+				transactions.add(payment);
+			}
 		} catch (addPaymentException e) {
-			e.getMessage();
+
+			System.out.println(e.getMessage());
 		}
 
 	}
@@ -71,12 +74,23 @@ public class CreditCard {
 
 	public Purchase getLargestPurchase() {
 		ArrayList<Transaction> purchases = new ArrayList<Transaction>();
+
 		for (int i = 0; i < transactions.size(); i++) {
 			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
 				purchases.add(transactions.get(i));
 			}
 		}
+
+		if (purchases.isEmpty()) {
+			return null;
+		}
+
 		Purchase largest = (Purchase) purchases.get(0);
+
+		if (purchases.size() < 2) {
+			return largest;
+
+		}
 
 		for (int i = 1; i < purchases.size(); i++) {
 			if (purchases.get(i).getAmount() > largest.getAmount()) {
@@ -103,13 +117,19 @@ public class CreditCard {
 
 	public Purchase getMostRecentPurchase() {
 
-		for (int i = transactions.size() - 1; i > 0; i--) {
+		ArrayList<Purchase> purchases = new ArrayList<Purchase>();
+		for (int i = 0; i < transactions.size(); i++) {
+
 			if (transactions.get(i).getType().equals(TransactionType.PURCHASE)) {
-				return (Purchase) transactions.get(i);
+				purchases.add((Purchase) transactions.get(i));
 
 			}
-
 		}
+
+		if (!purchases.isEmpty()) {
+			return purchases.get(purchases.size() - 1);
+		}
+
 		return null;
 
 	}
@@ -251,20 +271,37 @@ public class CreditCard {
 	}
 
 	public Payment getMostRecentPayment() {
-		for (int i = transactions.size() - 1; i > 0; i--) {
+		ArrayList<Payment> payments = new ArrayList<Payment>();
+		for (int i = 0; i < transactions.size(); i++) {
+
 			if (transactions.get(i).getType().equals(TransactionType.PAYMENT)) {
-				return (Payment) transactions.get(i);
+				payments.add((Payment) transactions.get(i));
+
+			}
+		}
+		int larger = 0;
+		Payment large = null;
+		for (int i = 0; i < payments.size(); i++) {
+
+			if (payments.get(i).getCounter() > larger) {
+
+				larger = payments.get(i).getCounter();
+				large = payments.get(i);
 
 			}
 
 		}
-		return null;
+
+		return large;
 
 	}
 
-	
 	public CreditCardStatus getCreditCardStatus() {
 		return creditCardStatus;
+	}
+
+	public String getCCId() {
+		return creditCardId;
 	}
 
 	@Override
@@ -283,4 +320,10 @@ public class CreditCard {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "CreditCard [creditCardId=" + creditCardId + "]";
+	}
+
 }
